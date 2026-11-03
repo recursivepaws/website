@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/styles/global.css"
+        ],
+        "createdAt": "2026-11-03T22:53:14.974Z",
+        "reason": "Claude triage: L238 is the standard blockquote left rule in .prose (pre-existing, commit a01bc249), not a card side-tab"
+      }
+    ]
+  }
+}
