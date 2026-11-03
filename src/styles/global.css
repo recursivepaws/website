@@ -278,9 +278,16 @@
       margin-bottom: 0.5em;
       cursor: pointer;
     }
+    /* wide tables (notebook DataFrames) scroll on their own instead of the article */
     & :where(table) {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
       margin-block: 0 1.25em;
       border-collapse: collapse;
+      font-size: 0.875em;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
     }
     /* Typst term lists (/ term: description) as two aligned columns */
     & :where(dl) {
@@ -319,6 +326,7 @@
       padding: 0.15em 1em 0.15em 0;
       text-align: left;
       vertical-align: baseline;
+      white-space: nowrap;
     }
     /* embeds pasted into posts carry fixed width attributes (e.g. figma's 800) */
     & :where(video, embed) {
