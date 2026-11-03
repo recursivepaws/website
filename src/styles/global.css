@@ -282,6 +282,23 @@
       margin-block: 0 1.25em;
       border-collapse: collapse;
     }
+    /* Typst term lists (/ term: description), laid out like Notion's "term : description" */
+    & :where(dl) {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      gap: 0.35em 0.5em;
+      margin-block: 0 1.25em;
+    }
+    & :where(dt)::after {
+      content: " :";
+    }
+    & :where(dd) {
+      margin: 0;
+    }
+    /* math fonts run small next to Fira Code's tall x-height */
+    & :where(math) {
+      font-size: 1.15em;
+    }
     & :where(td, th) {
       padding: 0.15em 1em 0.15em 0;
       text-align: left;
@@ -380,6 +397,11 @@
 [data-slot="badge"] img {
   opacity: 0.6;
 }
+/* Typst's code highlighting colors are tuned for light backgrounds */
+.dark .prose pre span[style] {
+  filter: brightness(1.45);
+}
+
 .dark [data-slot="badge"] img {
   filter: invert(1);
 }
