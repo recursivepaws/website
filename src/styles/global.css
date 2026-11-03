@@ -282,18 +282,34 @@
       margin-block: 0 1.25em;
       border-collapse: collapse;
     }
-    /* Typst term lists (/ term: description), laid out like Notion's "term : description" */
+    /* Typst term lists (/ term: description) as two aligned columns */
     & :where(dl) {
       display: grid;
       grid-template-columns: max-content 1fr;
       gap: 0.35em 0.5em;
       margin-block: 0 1.25em;
     }
-    & :where(dt)::after {
-      content: " :";
-    }
     & :where(dd) {
       margin: 0;
+    }
+    /* Typst `&` alignment points: like LaTeX's align, odd columns right, even left */
+    & :where(mtable.aligned > mtr > mtd:nth-child(odd)) {
+      text-align: right;
+    }
+    & :where(mtable.aligned > mtr > mtd:nth-child(even)) {
+      text-align: left;
+    }
+    /* Toggle headings: keep the heading on the marker's line */
+    & :where(details.section) {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+    & :where(summary > :is(h2, h3, h4, h5, h6)) {
+      display: inline;
+    }
+    & :where(details.section > summary) {
+      margin-block: 1.25em 0.5em;
     }
     /* math fonts run small next to Fira Code's tall x-height */
     & :where(math) {
