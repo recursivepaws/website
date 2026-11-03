@@ -19,7 +19,7 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          # biome, esbuild and sharp ship prebuilt binaries via pnpm (runs through nix-ld)
+          # biome, esbuild, sharp and typst-ts-node-compiler ship prebuilt binaries via pnpm (runs through nix-ld)
           packages = with pkgs; [
             nodejs_22
             pnpm

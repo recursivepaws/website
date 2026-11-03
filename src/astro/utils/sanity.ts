@@ -1,6 +1,9 @@
 import type { Asset, Reference, Slug } from "@sanity/types";
 import { loadQuery } from "./load-query";
 
+// Linked from the sidebar as a PDF, so it stays out of every post listing
+export const RESUME_SLUG = "resume";
+
 export async function getPosts(): Promise<Post[]> {
   const { data: posts } = await loadQuery<Array<Post>>({
     query: `*[_type == "post" && defined(slug.current)] | order(_createdAt desc)`,
@@ -10,7 +13,10 @@ export async function getPosts(): Promise<Post[]> {
 
 export async function getPost(slug: string): Promise<Post> {
   const { data: post } = await loadQuery<Post>({
-    query: `*[_type == "post" && defined(slug.current) && slug.current == $slug][0]`,
+    query: `*[_type == "post" && defined(slug.current) && slug.current == $slug][0]{
+      ...,
+      "typstFiles": typstFiles[]{ "name": asset->originalFilename, "url": asset->url }
+    }`,
     params: {
       slug,
     },
@@ -51,8 +57,8 @@ export async function getReference<T>({
 
 export async function getPostsInCategory(id: string): Promise<Post[]> {
   const { data } = await loadQuery<Post[]>({
-    query: `*[_type == "post" && defined(slug.current) && references($id)] | order(date desc)`,
-    params: { id },
+    query: `*[_type == "post" && defined(slug.current) && slug.current != $resume && references($id)] | order(date desc)`,
+    params: { id, resume: RESUME_SLUG },
   });
   return data;
 }
@@ -68,7 +74,8 @@ export async function getCategory(slug: string): Promise<Category | null> {
 // Sidebar list: only categories that have posts.
 export async function getNavCategories(): Promise<Category[]> {
   const { data } = await loadQuery<Category[]>({
-    query: `*[_type == "category" && defined(slug.current) && count(*[_type == "post" && references(^._id)]) > 0] | order(title asc)`,
+    query: `*[_type == "category" && defined(slug.current) && count(*[_type == "post" && slug.current != $resume && references(^._id)]) > 0] | order(title asc)`,
+    params: { resume: RESUME_SLUG },
   });
   return data;
 }
@@ -80,7 +87,8 @@ export async function getHighlights(): Promise<Post[]> {
   });
   if (data.length) return data;
   const { data: newest } = await loadQuery<Post[]>({
-    query: `*[_type == "post" && defined(slug.current)] | order(date desc)[0...3]`,
+    query: `*[_type == "post" && defined(slug.current) && slug.current != $resume] | order(date desc)[0...3]`,
+    params: { resume: RESUME_SLUG },
   });
   return newest;
 }
@@ -90,7 +98,6 @@ export type Category = {
   title: string;
   slug: Slug;
   icon: Icon;
-  art: boolean;
 };
 
 export interface Photo extends Asset {
@@ -133,5 +140,10 @@ export interface Post {
   title?: string;
   slug: Slug;
   excerpt?: string;
+  format?: "markdown" | "typst";
   body?: string;
+  typst?: string;
+  typstFiles?: { name: string; url: string }[];
+  // Unset means true, so typst posts made before the field existed still get the button
+  pdf?: boolean;
 }

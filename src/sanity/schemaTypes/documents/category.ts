@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineType } from "sanity";
 import { mediaPreview } from "sanity-plugin-icon-manager";
 import { Common, mapDefinition } from "../fields";
 
@@ -10,13 +10,6 @@ export default defineType({
     Common.title,
     Common.slug,
     Common.icon,
-    defineField({
-      title: "Is this art?",
-      name: "art",
-      type: "boolean",
-      options: { layout: "checkbox" },
-      validation: (rule) => rule.required(),
-    }),
   ].map(mapDefinition),
   preview: {
     select: {
@@ -30,8 +23,5 @@ export default defineType({
         media: mediaPreview(icon),
       };
     },
-  },
-  initialValue: {
-    art: false,
   },
 });

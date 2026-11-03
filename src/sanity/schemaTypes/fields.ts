@@ -10,7 +10,11 @@ export enum Common {
   links = "links",
   nsfw = "nsfw",
   featured = "featured",
+  format = "format",
   body = "body",
+  typst = "typst",
+  typstFiles = "typstFiles",
+  pdf = "pdf",
   preview = "preview",
   tags = "tags",
 }
@@ -71,10 +75,50 @@ export const common: Record<Common, FieldDefinition> = {
     type: "array",
     of: [{ type: "url" }],
   }),
+  format: defineField({
+    name: "format",
+    title: "Format",
+    type: "string",
+    options: {
+      list: [
+        { title: "Markdown", value: "markdown" },
+        { title: "Typst", value: "typst" },
+      ],
+      layout: "radio",
+      direction: "horizontal",
+    },
+    initialValue: "markdown",
+  }),
   body: defineField({
     name: "body",
     title: "Body",
     type: "markdown",
+    hidden: ({ document }) => document?.format === "typst",
+  }),
+  typst: defineField({
+    name: "typst",
+    title: "Typst",
+    type: "text",
+    rows: 30,
+    description: 'Typst source. sys.inputs.target is "html" or "pdf".',
+    hidden: ({ document }) => document?.format !== "typst",
+  }),
+  typstFiles: defineField({
+    name: "typstFiles",
+    title: "Typst files",
+    type: "array",
+    of: [{ type: "file" }],
+    description:
+      'Images, .typ or .bib files, referenced by upload filename, e.g. #image("fig.png").',
+    hidden: ({ document }) => document?.format !== "typst",
+  }),
+  pdf: defineField({
+    name: "pdf",
+    title: "Offer PDF download",
+    type: "boolean",
+    options: { layout: "checkbox" },
+    hidden: ({ document }) => document?.format !== "typst",
+    initialValue: true,
   }),
   preview: defineField({
     name: "preview",

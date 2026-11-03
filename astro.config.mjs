@@ -41,6 +41,8 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    // Native .node binary, must not be bundled
+    ssr: { external: ["@myriaddreamin/typst-ts-node-compiler"] },
   },
 });
 

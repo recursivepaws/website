@@ -7,6 +7,8 @@ import { Marked } from "marked";
 import markedFootnote from "marked-footnote";
 import { Gallery } from "../../components/Gallery";
 import { LinkButtons } from "../../components/LinkButtons";
+import { stegaClean } from "@sanity/client/stega";
+import { TypstError, typstHtml } from "../../utils/typst";
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -24,7 +26,26 @@ const post = await getPost(slug);
 const md = new Marked().use(
   markedFootnote({ description: "Sources", headingClass: "" }),
 );
-const htmlContent = md.parse(post.body ?? "");
+let htmlContent: string;
+let typstError: string | undefined;
+const typst = stegaClean(post.format) === "typst";
+if (typst) {
+  try {
+    htmlContent = await typstHtml(post);
+  } catch (e) {
+    if (!(e instanceof TypstError)) throw e;
+    typstError = e.message;
+    htmlContent = "";
+  }
+} else {
+  htmlContent = md.parse(post.body ?? "") as string;
+}
+
+// LinkButtons labels `?dl=<file>` links as "Download <EXT>"
+const links = [...(post.links ?? [])];
+if (typst && post.pdf !== false) {
+  links.push(new URL(`/post/${slug}.pdf?dl=${slug}.pdf`, Astro.url).href);
+}
 ---
 
 <Layout
@@ -45,7 +66,8 @@ const htmlContent = md.parse(post.body ?? "");
         </div>
       )
     }
-    <LinkButtons links={post.links ?? []} />
+    <LinkButtons links={links} />
+    {typstError && <pre class="post__error">{typstError}</pre>}
     <div class="post__body prose" set:html={htmlContent} />
   </article>
 
@@ -73,6 +95,16 @@ const htmlContent = md.parse(post.body ?? "");
       margin-top: 0.5rem;
       font-size: 0.875rem;
       color: var(--muted-foreground);
+    }
+
+    .post__error {
+      white-space: pre-wrap;
+      color: var(--destructive);
+    }
+
+    /* Typst bakes black into math SVGs; follow the text color for dark mode */
+    .post__body :global(.typst-frame use) {
+      fill: currentColor;
     }
 
     .post__media :global(img) {

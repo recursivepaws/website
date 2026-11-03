@@ -1,6 +1,7 @@
 ---
+import { FileText } from "lucide-react";
 import { Icon } from "./Icon";
-import type { Category } from "../utils/sanity";
+import { RESUME_SLUG, type Category } from "../utils/sanity";
 
 interface Props {
   categories: Category[];
@@ -11,36 +12,39 @@ interface Props {
 }
 
 const { categories, current, tagged = [] } = Astro.props;
-const groups = [
-  { label: "Art", items: categories.filter((c) => c.art) },
-  { label: "Everything else", items: categories.filter((c) => !c.art) },
-].filter((g) => g.items.length);
 ---
 
 <aside id="sidebar" popover aria-label="Site navigation">
   <a class="sidebar__title" href="/">vera.lgbt</a>
   <nav>
-    {
-      groups.map((group) => (
-        <section>
-          <h2 class="sidebar__label">{group.label}</h2>
-          <ul>
-            {group.items.map((c) => (
-              <li>
-                <a
-                  href={`/category/${c.slug.current}`}
-                  aria-current={c.slug.current === current ? "page" : undefined}
-                  data-tagged={tagged.includes(c._id) || undefined}
-                >
-                  <Icon icon={c.icon} />
-                  {c.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))
-    }
+    <section>
+      <ul>
+        <li>
+          <a href={`/post/${RESUME_SLUG}.pdf`} download>
+            <FileText className="sidebar__icon" aria-hidden="true" />
+            Resume
+          </a>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <ul>
+        {
+          categories.map((c) => (
+            <li>
+              <a
+                href={`/category/${c.slug.current}`}
+                aria-current={c.slug.current === current ? "page" : undefined}
+                data-tagged={tagged.includes(c._id) || undefined}
+              >
+                <Icon icon={c.icon} />
+                {c.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
   </nav>
 </aside>
 
@@ -83,15 +87,6 @@ const groups = [
     margin-top: 1.5rem;
   }
 
-  .sidebar__label {
-    margin: 0 0.5rem 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted-foreground);
-  }
-
   ul a {
     display: flex;
     align-items: center;
@@ -119,6 +114,11 @@ const groups = [
     font-weight: 500;
   }
   ul a :global(img) {
+    width: 1rem;
+    height: 1rem;
+    opacity: 0.7;
+  }
+  ul a :global(.sidebar__icon) {
     width: 1rem;
     height: 1rem;
     opacity: 0.7;

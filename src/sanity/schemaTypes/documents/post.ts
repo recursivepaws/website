@@ -22,7 +22,11 @@ export default defineType({
     common.icon,
     common.date,
     common.gallery,
+    common.format,
     common.body,
+    common.typst,
+    common.typstFiles,
+    common.pdf,
   ],
   preview: {
     select: {
