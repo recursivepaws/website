@@ -97,14 +97,16 @@ if (typst && post.pdf !== false) {
       color: var(--muted-foreground);
     }
 
+    /* MathML never line-breaks; let a too-wide equation scroll instead of the page */
+    .post__body {
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
     .post__error {
       white-space: pre-wrap;
       color: var(--destructive);
-    }
-
-    /* Typst bakes black into math SVGs; follow the text color for dark mode */
-    .post__body :global(.typst-frame use) {
-      fill: currentColor;
     }
 
     .post__media :global(img) {

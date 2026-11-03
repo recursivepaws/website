@@ -112,6 +112,14 @@
 }
 
 .dark {
+  /* Notion's dark-mode text colors; Typst posts fall back to the light ones inline */
+  --notion-red: #ff7369;
+  --notion-orange: #ffa344;
+  --notion-yellow: #ffdc49;
+  --notion-green: #4dab9a;
+  --notion-blue: #529cca;
+  --notion-purple: #9a6dd7;
+  --notion-pink: #e255a1;
   --background: #1c1917;
   --foreground: rgb(255 255 255 / 0.75);
   --heading: #fff;
@@ -190,6 +198,11 @@
       font-size: 1.25rem;
       line-height: 1.35;
     }
+    & :where(h4) {
+      margin: 1.75em 0 0.5em;
+      font-size: 1.0625rem;
+      font-weight: 600;
+    }
     /* scene break */
     & :where(hr) {
       height: auto;
@@ -247,6 +260,32 @@
       max-width: 100%;
       height: auto;
       margin-inline: auto;
+    }
+    /* Typst figures: diagrams at the PDF's 85% width */
+    & :where(figure img) {
+      max-width: 85%;
+    }
+    /* Typst toggles */
+    & :where(details) {
+      margin-block: 0 1.25em;
+      padding-left: 0.8em;
+      border-left: 1.5px solid var(--border);
+      & > :last-child {
+        margin-bottom: 0;
+      }
+    }
+    & :where(summary) {
+      margin-bottom: 0.5em;
+      cursor: pointer;
+    }
+    & :where(table) {
+      margin-block: 0 1.25em;
+      border-collapse: collapse;
+    }
+    & :where(td, th) {
+      padding: 0.15em 1em 0.15em 0;
+      text-align: left;
+      vertical-align: baseline;
     }
     /* embeds pasted into posts carry fixed width attributes (e.g. figma's 800) */
     & :where(video, embed) {
