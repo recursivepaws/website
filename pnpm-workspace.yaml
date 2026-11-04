@@ -2,3 +2,10 @@ allowBuilds:
   '@vercel/speed-insights': true
   esbuild: true
   sharp: true
+# WARN: keep one copy of each CodeMirror core package.
+# Two @codemirror/state copies break the Typst editor's instanceof checks.
+overrides:
+  '@codemirror/autocomplete': 6.20.4
+  '@codemirror/lint': 6.9.7
+  '@codemirror/state': 6.7.6
+  '@codemirror/view': 6.43.15

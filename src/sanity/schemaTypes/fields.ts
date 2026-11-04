@@ -1,4 +1,5 @@
 import { defineField, type FieldDefinition } from "sanity";
+import { TypstInput } from "../components/typstInput";
 
 export enum Common {
   title = "title",
@@ -99,7 +100,7 @@ export const common: Record<Common, FieldDefinition> = {
     name: "typst",
     title: "Typst",
     type: "text",
-    rows: 30,
+    components: { input: TypstInput },
     description: 'Typst source. sys.inputs.target is "html" or "pdf".',
     hidden: ({ document }) => document?.format !== "typst",
   }),
